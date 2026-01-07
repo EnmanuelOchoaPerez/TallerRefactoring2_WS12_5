@@ -43,7 +43,7 @@ public class RecetaMedica {
     }
 
     public List<String> getMedicamentos() {
-        return medicamentos;
+        return List.copyOf(medicamentos);
     }
 
     public void setMedicamentos(List<String> medicamentos) {

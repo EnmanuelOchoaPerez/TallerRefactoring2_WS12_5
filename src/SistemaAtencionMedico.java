@@ -5,6 +5,7 @@ public class SistemaAtencionMedico {
     private List<Paciente> pacientes;
     private List<Medico> medicos;
     private List<ServicioMedico> serviciosMedicos;
+    public static final double DESCUENTO_ADULTO_MAYOR = 0.25;
 
     public SistemaAtencionMedico() {
         this.pacientes = new ArrayList<>();
@@ -29,13 +30,13 @@ public class SistemaAtencionMedico {
         int edadPaciente = paciente.getEdad();
         costoConsulta = calcularValorFinalConsulta(costoConsulta,edadPaciente);
         System.out.println("Se han cobrado "+ costoConsulta+ " dolares de su tarjeta de credito");
-        paciente.historialMedico.getConsultas().add(consulta); //Hacer esto es incorrecto
+        paciente.agregarConsulta(consulta); 
     }
 
     public double calcularValorFinalConsulta(double costoConsulta, int edadPaciente){
         double valorARestar = 0;
         if(edadPaciente>=65){
-            valorARestar = costoConsulta*0.25; //0.25 es el descuento para adultos mayores
+            valorARestar = costoConsulta*DESCUENTO_ADULTO_MAYOR;
         }
         return costoConsulta-valorARestar;
     }
