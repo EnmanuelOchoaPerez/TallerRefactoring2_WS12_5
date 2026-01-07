@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class SistemaAtencionMedico {
     private List<Paciente> pacientes;
     private List<Medico> medicos;
     private List<ServicioMedico> serviciosMedicos;
+    private static final int EDAD_TERCERA_EDAD = 65;
+    private static final double DESCUENTO_ADULTO_MAYOR = 0.25;
+    
 
     public SistemaAtencionMedico() {
         this.pacientes = new ArrayList<>();
@@ -29,39 +33,37 @@ public class SistemaAtencionMedico {
         int edadPaciente = paciente.getEdad();
         costoConsulta = calcularValorFinalConsulta(costoConsulta,edadPaciente);
         System.out.println("Se han cobrado "+ costoConsulta+ " dolares de su tarjeta de credito");
-        paciente.historialMedico.getConsultas().add(consulta); //Hacer esto es incorrecto
+        paciente.agregarConsulta(consulta); 
     }
 
     public double calcularValorFinalConsulta(double costoConsulta, int edadPaciente){
-        double valorARestar = 0;
-        if(edadPaciente>=65){
-            valorARestar = costoConsulta*0.25; //0.25 es el descuento para adultos mayores
-        }
-        return costoConsulta-valorARestar;
+    if(edadPaciente >= EDAD_TERCERA_EDAD){
+        return costoConsulta * (1 - DESCUENTO_ADULTO_MAYOR);
+    }
+    return costoConsulta;
     }
 
     // se puede parametrizar (obtener...)
-    public Paciente obtenerPaciente(String nombrePaciente) {
-        for(Paciente paciente : pacientes){
-            if (paciente.getNombre().equals(nombrePaciente))
-                return paciente;
-        }
-        return null;
-    }
+  public Paciente obtenerPaciente(String nombrePaciente) {
+    return buscarElementoPorNomnbre(pacientes, nombrePaciente, Paciente::getNombre);
+  }
 
-    public ServicioMedico obtenerServicioMedico(String nombreServicio) {
-        for(ServicioMedico servicioMedico : serviciosMedicos){
-            if (servicioMedico.getNombre().equals(nombreServicio))
-                return servicioMedico;
-        }
-        return null;
-    }
+  public ServicioMedico obtenerServicioMedico(String nombreServicio) {
+    return buscarElementoPorNomnbre(serviciosMedicos, nombreServicio, ServicioMedico::getNombre);
+  }
 
-    public Medico obtenerMedico(String nombreMedico) {
-        for(Medico medico : medicos){
-            if (medico.getNombre().equals(nombreMedico))
-                return medico;
+  public Medico obtenerMedico(String nombreMedico) {
+    return buscarElementoPorNomnbre(medicos, nombreMedico, Medico::getNombre);
+  }
+
+   private <T> T buscarElementoPorNomnbre(List<T> lista, String nombreBuscado, Function<T, String> obtenerNombre) {
+    for (T elemento : lista) {
+        String nombreElemento = obtenerNombre.apply(elemento);
+        
+        if (nombreElemento.equals(nombreBuscado)) {
+            return elemento;
         }
-        return null;
+    }
+    return null;
     }
 }
